@@ -20,19 +20,24 @@ By default, 2 bars will be shown. This can be change in the `claimbar_settings.j
 
  `/cb theme` - set theme. Default = 1 (Darksouls theme)
 
- Available options:
+ ###Available options:
 
- `/cb theme 1` - Darksouls\
+ `/cb theme 1` - Darksouls
+
 ![img](https://i.imgur.com/723b2Xa.png)
 
- `/cb theme 2` - CustomHud\
+ `/cb theme 2` - CustomHud
+ 
 ![img](https://i.imgur.com/wpDbR8M.png)
+
+## TODO
+- buff/debuff icon
 
 ## Limitations
 
-Since there is no way to query for claimed monster, each entity needed to the scanned in order of their memory location. Their position in the bar can change and fluctuate. 
+The order of monsters follow their position in memory. When new mobs got claimed, their order in the bar can move and fluctuate. 
 
-For example. If max bar is set to 2 and there are 3 crabs in memory. Your party claimed crabs #2 and #3
+Example. Max bar = 2, with 3x crabs in memory. Your party claimed crab #2 and #3
 
 Crab #1\
 Crab #2 --> Bar 1\
