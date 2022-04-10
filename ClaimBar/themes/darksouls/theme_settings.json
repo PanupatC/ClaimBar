@@ -1,0 +1,23 @@
+{
+    "max_char": 18,
+    "height_per_target": 42,
+    "bar_bg": {
+        "x": 0,
+        "y": 14
+    },
+    "bar_fg": {
+        "x": 16,
+        "y": 6
+    },
+    "anim": {
+        "enable": true,
+        "r": 0.6,
+        "g": 0,
+        "b": 0.2,
+        "a": 1
+    },
+    "name": {
+        "x": 18,
+        "y": 0
+    }
+}
