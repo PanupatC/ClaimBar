@@ -35,7 +35,7 @@ Shows HP bars of monsters claimed by party and alliance. The bar will always sho
 
 1. Monsters' buff/debuff are not exposed to the game client. The code relies on incoming packets and messages to track them. Status effects that they received or wore off outside the range you'd receive these messages cannot be tracked.
 
-2. The order of monsters follow their position in memory. If the bars are displaying mobs #5 and #6, and your party claimed mobs #1 and #2, they will take the bars' place.
+2. The order of monsters displayed follows their positions in memory. If the bars are displaying mobs #5 and #6, and your party claimed mobs #1 and #2, they will take the bars' place.
 
 ## Special thanks
 
