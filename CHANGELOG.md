@@ -1,6 +1,6 @@
 # ClaimBar Change Log
 
-### v1.0.0 - 2022/04/12
+### v1.0.0 - 2022-04-12
 
 - Added buff/debuff icons
 - Changed default theme to CustomHud
