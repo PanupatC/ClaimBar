@@ -4,9 +4,9 @@ Claimed mobs HP bar addon for Ashita v3
 
 Shows HP bars of monsters claimed by party and alliance. The bar will always show  without the player needing to target them.
 
-By default, 2 bars will be shown. This can be change in the `claimbar_settings.json` or in game command `/cb bars x`
+2 bars are displayed by default. You can decrease/increase this number as much as you like in `claimbar_settings.json` or in game command `/cb bars x`
 
-![img](https://i.imgur.com/MLp4Bz2.png)
+![img](https://i.imgur.com/pdPVTAE.png)
 
 
 ## Commands
@@ -30,21 +30,15 @@ By default, 2 bars will be shown. This can be change in the `claimbar_settings.j
  
 ![img](https://i.imgur.com/wpDbR8M.png)
 
-## TODO
-- buff/debuff icon
 
 ## Limitations
 
-The order of monsters follow their position in memory. When new mobs got claimed, their order in the bar can move and fluctuate. 
+1. Monsters' buff/debuff are not exposed to the game client. The code relies on incoming packets and messages to track them. Status effects that they received or wore off outside the range you'd receive these messages cannot be tracked.
 
-Example. Max bar = 2, with 3x crabs in memory. Your party claimed crab #2 and #3
+2. The order of monsters follow their position in memory. If the bars are displaying mobs #5 and #6, and your party claimed mobs #1 and #2, they will take the bars' place.
 
-Crab #1\
-Crab #2 --> Bar 1\
-Crab #3 --> Bar 2
+## Special thanks
 
-If your party claimed Crab #1, it will take Bar 1's place, pushing #2 downwards and removing #3.
-
-Crab #1 --> Bar 1\
-Crab #2 --> Bar 2\
-Crab #3
+* Creators of Debuffed addon, Auk/beauxq. The buff/debuff icons make use of their code almost as is.
+* CustomHud creator Syllendel (Syll#3694) which inspired the creation of this addon.
+* Thorny and at0mos who put up with my barrage of questions and provided support.
