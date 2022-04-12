@@ -1,5 +1,9 @@
 # ClaimBar Change Log
 
+### v1.0.1 - 2022-04-12
+
+- Globalized local functions in debuffed.lua
+
 ### v1.0.0 - 2022-04-12
 
 - Added buff/debuff icons
