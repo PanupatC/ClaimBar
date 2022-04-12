@@ -441,7 +441,7 @@ function hasNonStringIndex(T)
 end
 
 
-local function pullAbilityName(message)
+function pullAbilityName(message)
     local mobNameEnd, uses = string.find(message, " uses ", 1, true);
     if uses == nil then return nil; end
 
@@ -469,7 +469,7 @@ end
 
 
 -- table to string for debugging
-local function myDump(o)
+function myDump(o)
     if type(o) == 'table' then
        local s = '{ '
        for k,v in pairs(o) do
@@ -483,7 +483,7 @@ local function myDump(o)
  end
 
 
- local function dataToPacketTable(data, size)
+ function dataToPacketTable(data, size)
     --local testPacket = {26, 14, 200};
     --print("testPacket: " .. myDump(testPacket));
 
