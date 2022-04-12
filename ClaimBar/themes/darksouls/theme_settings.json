@@ -1,9 +1,9 @@
 {
     "max_char": 18,
-    "height_per_target": 42,
+    "height_per_target": 52,
     "bar_bg": {
         "x": 0,
-        "y": 14
+        "y": 11
     },
     "bar_fg": {
         "x": 16,
@@ -19,5 +19,12 @@
     "name": {
         "x": 18,
         "y": 0
+    },
+    "buff":{
+        "multiline": false,
+        "x": 50,
+        "y": 26,
+        "h": 30,
+        "scale": 0.6
     }
 }

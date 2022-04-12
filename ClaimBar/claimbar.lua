@@ -1,15 +1,16 @@
 _addon.author   = 'Jaza (Jaza#6599)';
 _addon.name     = 'ClaimBar';
-_addon.version  = '0.5.0';
+_addon.version  = '1.0.0';
 
 require 'common'
 require 'd3d8'
 require 'imguidef'
+require 'debuffed'
 
 -- Default config.
 -- Recommend to leave as is and override in json instead
 local config = {
-    theme = 'darksouls',
+    theme = 'customhud',
     max_bar = 1,
     scale = 1.0,
     anim_time = 0.6 -- seconds
@@ -28,7 +29,12 @@ fps.frame = 0
 
 local anim = {}
 -- anim[entity_id] = {hpp=hpp, tween={0.0 -> 1.0}, pause=8}
---
+
+-- Global is required
+debuffed_config = {
+    durations = {},
+    abilityNames = {}
+}
 --
 
 ----------------------------------
@@ -36,7 +42,7 @@ local anim = {}
 ----------------------------------
 ashita.register_event('load', function()
     config = ashita.settings.load_merged(_addon.path..'claimbar_settings.json', config);
-    load_icons()
+    debuffed_config = ashita.settings.load_merged(_addon.path..'debuffed_settings.json', config);
     load_theme()
 end);
 
@@ -55,9 +61,20 @@ end);
 
 
 ashita.register_event('unload', function()
-    ashita.settings.save(_addon.path..'/claimbar_settings.json', config);
+    ashita.settings.save(_addon.path..'claimbar_settings.json', config);
+    ashita.settings.save(_addon.path..'debuffed_settings.json', debuffed_config);
 end);
 
+ashita.register_event('incoming_text', function(mode, message, modifiedmode, modifiedmessage, blocked)
+    debuffed_incoming_text(mode, message, modifiedmode, modifiedmessage, blocked)
+    return false
+end);
+
+
+ashita.register_event('incoming_packet', function(id, size, data)
+    debuffed_incoming_packet(id, size, data)
+    return false
+end);
 
 ashita.register_event('command', function(cmd, nType)
     local args = cmd:args()
@@ -145,7 +162,7 @@ end);
 function main_loop()
     local party = AshitaCore:GetDataManager():GetParty();
     if (party:GetMemberActive(0) == false or party:GetMemberServerId(0) == 0) then
-        return;
+        return
 	end
 
     -- store id as hashtable for quick easy search
@@ -188,9 +205,14 @@ end
 ----------------------------------
 --    utilities and functions   --
 ----------------------------------
-function load_icons()
-    local template = _addon.path..'\\icons\\{X}.png'
-    local sub = '{X}'
+function load_icon(spell_id)
+    if (icons[spell_id] == nil) then
+        local path = string.format(_addon.path..'\\icons\\%s.png', spell_id)
+        icons[spell_id] = {}
+        icons[spell_id].w, icons[spell_id].h = png_width_height(path)
+        icons[spell_id].tx = create_texture(path)
+    end
+
 end
 
 function load_theme()
@@ -203,23 +225,24 @@ function load_theme()
 end
 
 function load_images()
-    local template = _addon.path..'themes\\'..config.theme..'\\{X}.png'
-    local sub = '{X}'
+    local template = _addon.path..'themes\\'..config.theme..'\\%s.png'
+    local path = ''
+    local elem = {}
+    local c = ''
 
-    local elem = {"bar_fg", "bar_bg"}
-
+    elem = {"bar_fg", "bar_bg"}
     for i, e in pairs(elem) do
-        local path = template:gsub(sub, e)
+        path = string.format(template, e)
         images[e] = {}
         images[e].w, images[e].h = png_width_height(path)
         images[e].tx = create_texture(path)
     end
 
     elem = "abcdefghijklmnopqrstuvwxyz()'-"
-    template = _addon.path..'themes\\'..config.theme..'\\font\\{X}.png'
+    template = _addon.path..'themes\\'..config.theme..'\\font\\%s.png'
     for i = 1, #elem do  
-        local c = string.sub(elem, i, i) 
-        local path = template:gsub(sub, c)
+        c = string.sub(elem, i, i)
+        path = string.format(template, c)
         images[c] = {}
         images[c].w, images[c].h = png_width_height(path)
         images[c].tx = create_texture(path)
@@ -227,17 +250,17 @@ function load_images()
 
     elem = {'ellipsis', 'dot', 'space'}
     for i, c in pairs(elem) do
-        local path = template:gsub(sub, c)
+        path = string.format(template, c)
         images[c] = {}
         images[c].w, images[c].h = png_width_height(path)
         images[c].tx = create_texture(path)
     end
 
     elem = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    template = _addon.path..'themes\\'..config.theme..'\\font\\{X}.png'
+    template = _addon.path..'themes\\'..config.theme..'\\font\\%s.png'
     for i = 1, #elem do  
-        local c = string.sub(elem, i, i) 
-        local path = template:gsub(sub, c:lower()..c:lower())
+        c = string.sub(elem, i, i) 
+        path = string.format(template, c:lower()..c:lower())
         images[c] = {}
         images[c].w, images[c].h = png_width_height(path)
         images[c].tx = create_texture(path)
@@ -251,21 +274,23 @@ function draw_bar(index, entity)
     local hpp = entity.HealthPercent/100
     local bg = images.bar_bg
     local fg = images.bar_fg
-    local x, y = 0, (index-1) * theme_config.height_per_target * config.scale
+    local _x, _y = 0, (index-1) * theme_config.height_per_target * config.scale
+    local debuffs = {}
+
     if (hpp > 0 ) then
         r,g,b = 1,1,1
     else
         r,g,b = 0.4,0.4,0.4
     end
 
-    x = x + (theme_config.bar_bg.x * config.scale)
-    y = y + (theme_config.bar_bg.y * config.scale)
+    x = _x + (theme_config.bar_bg.x * config.scale)
+    y = _y + (theme_config.bar_bg.y * config.scale)
     imgui.SetCursorPos(x, y)
     imgui.Image(
         bg.tx:Get(),
         bg.w * config.scale,
         bg.h * config.scale,
-        0,0,1,1, -- UV1
+        0,0,1,1, -- UV
         r,g,b,1 -- Color
     )
 
@@ -277,7 +302,7 @@ function draw_bar(index, entity)
             fg.tx:Get(),
             fg.w * config.scale * hpp,
             fg.h * config.scale,
-            0,0,hpp,1, -- UV1
+            0,0,hpp,1, -- UV
             r,g,b,1 -- Color
         )
     end
@@ -300,12 +325,8 @@ function draw_bar(index, entity)
                     anim[id].tween,
                     outQuad(i, anim[id].hpp, -diff, frames))
             end
-            -- for i = 1, frames do
-            --     table.insert(anim[id].tween, 1, anim[id].tween[1])
-            -- end
             anim[id].pause = frames
             anim[id].hpp = hpp
-            -- for i, v in pairs(anim[id].tween) do print(v) end
         end
 
         local loss_hp = 0
@@ -336,7 +357,8 @@ function draw_bar(index, entity)
     --     anim[id] = nil
     -- end
     
-    y = (index-1) * theme_config.height_per_target * config.scale
+    -- y = (index-1) * theme_config.height_per_target * config.scale
+    y = (index-1) * _y
     imgui.SetCursorPos(theme_config.name.x, theme_config.name.y + y)
     imgui.Text('')
     local txt = ''
@@ -359,6 +381,45 @@ function draw_bar(index, entity)
         )
         if (i > theme_config.max_char) then break; end
     end
+
+    
+    debuffs = get_debuffs_from_entity(entity)
+    if (debuffs ~= nil) then
+        x = _x + (theme_config.buff.x * config.scale)
+        y = _y + (theme_config.buff.y * config.scale)
+        imgui.SetCursorPos(x,y)
+        imgui.Text('')
+        for i, spell_id in pairs(debuffs.buff) do
+            load_icon(spell_id)
+            imgui.SameLine(0, 0)
+            imgui.Image(
+                icons[spell_id].tx:Get(),
+                icons[spell_id].w * config.scale * theme_config.buff.scale,
+                icons[spell_id].h * config.scale * theme_config.buff.scale,
+                0,0,1,1,
+                r,g,b,1
+            )
+        end
+        
+        if (theme_config.buff.multiline == true) then
+            y = y + (theme_config.buff.height * config.scale)
+            imgui.SetCursorPos(x,y)
+            imgui.Text('')
+        end
+        for i, spell_id in pairs(debuffs.debuff) do
+            load_icon(spell_id)
+            imgui.SameLine(0, 0)
+            imgui.Image(
+                icons[spell_id].tx:Get(),
+                icons[spell_id].w * config.scale * theme_config.buff.scale,
+                icons[spell_id].h * config.scale * theme_config.buff.scale,
+                0,0,1,1,
+                r,g,b,1
+            )
+        end
+    end
+    
+
 end
 
 
@@ -416,7 +477,7 @@ end
 
 ---------------------------------------------------------------
 function test()
-    print(images['ellipsis'].tx)
+    dtest()
 end
 
 

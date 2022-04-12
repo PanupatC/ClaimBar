@@ -1,6 +1,6 @@
 {
     "max_char": 14,
-    "height_per_target": 36,
+    "height_per_target": 45,
     "bar_bg": {
         "x": 0,
         "y": 14
@@ -19,5 +19,12 @@
     "name": {
         "x": 6,
         "y": 0
+    },
+    "buff":{
+        "multiline": false,
+        "x": 50,
+        "y": 22,
+        "h": 30,
+        "scale": 0.6
     }
 }
