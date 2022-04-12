@@ -1,5 +1,8 @@
 # ClaimBar Change Log
 
+### v1.0.2 - 2022-04-12
+
+- Fixed version number
 ### v1.0.1 - 2022-04-12
 
 - Globalized local functions in debuffed.lua

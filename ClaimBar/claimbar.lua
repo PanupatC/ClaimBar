@@ -1,6 +1,6 @@
 _addon.author   = 'Jaza (Jaza#6599)';
 _addon.name     = 'ClaimBar';
-_addon.version  = '1.0.0';
+_addon.version  = '1.0.2';
 
 require 'common'
 require 'd3d8'
