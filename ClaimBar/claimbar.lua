@@ -1,6 +1,6 @@
 _addon.author   = 'Jaza (Jaza#6599)';
 _addon.name     = 'ClaimBar';
-_addon.version  = '1.0.2';
+_addon.version  = '1.1.0';
 
 require 'common'
 require 'd3d8'
@@ -44,7 +44,7 @@ ashita.register_event('load', function()
     config = ashita.settings.load_merged(_addon.path..'claimbar_settings.json', config);
     debuffed_config = ashita.settings.load_merged(_addon.path..'debuffed_settings.json', config);
     load_theme()
-end);
+end)
 
 
 ashita.register_event('render', function()
@@ -57,24 +57,28 @@ ashita.register_event('render', function()
 
     main_loop()
 
-end);
+end)
 
 
 ashita.register_event('unload', function()
     ashita.settings.save(_addon.path..'claimbar_settings.json', config);
     ashita.settings.save(_addon.path..'debuffed_settings.json', debuffed_config);
-end);
+end)
 
 ashita.register_event('incoming_text', function(mode, message, modifiedmode, modifiedmessage, blocked)
     debuffed_incoming_text(mode, message, modifiedmode, modifiedmessage, blocked)
     return false
-end);
+end)
 
 
 ashita.register_event('incoming_packet', function(id, size, data)
     debuffed_incoming_packet(id, size, data)
+    -- zone packet, clear anim data
+	if (id == 0x0A) then
+        anim = {}
+    end
     return false
-end);
+end)
 
 ashita.register_event('command', function(cmd, nType)
     local args = cmd:args()
@@ -156,7 +160,7 @@ ashita.register_event('command', function(cmd, nType)
     end
 
     return false
-end);
+end)
 
 
 function main_loop()
@@ -353,11 +357,10 @@ function draw_bar(index, entity)
         end
     end
 
-    -- if (anim[id].hpp == 0 and #anim[id].tween == 0) then
-    --     anim[id] = nil
-    -- end
+    if (anim[id].hpp == 0 and #anim[id].tween == 0) then
+        anim[id] = nil
+    end
     
-    -- y = (index-1) * theme_config.height_per_target * config.scale
     y = (index-1) * _y
     imgui.SetCursorPos(theme_config.name.x, theme_config.name.y + y)
     imgui.Text('')

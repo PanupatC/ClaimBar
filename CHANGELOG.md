@@ -1,5 +1,10 @@
 # ClaimBar Change Log
 
+### v1.1.0 - 2022-04-16
+
+- Animation data clear when zoning packet detected
+- Specific mob's animation data clear when hp reaches 0 and no tween left to do
+
 ### v1.0.2 - 2022-04-12
 
 - Fixed version number
