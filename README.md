@@ -4,9 +4,9 @@ Claimed mobs HP bar addon for Ashita v3
 
 Shows HP bars of monsters claimed by party and alliance. The bar will display without the player needing to target them.
 
-2 bars are displayed by default. You can set this number as low or high as you like in `claimbar_settings.json` or in game command `/cb bars x`
+3 bars are displayed by default. Number of bars can be set with command `/cb bars x`
 
-![img](https://i.imgur.com/pdPVTAE.png)
+![img](https://i.imgur.com/N6MlNtX.png)
 
 
 ## Commands

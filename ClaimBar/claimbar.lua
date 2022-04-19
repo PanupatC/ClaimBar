@@ -1,6 +1,6 @@
 _addon.author   = 'Jaza (Jaza#6599)';
 _addon.name     = 'ClaimBar';
-_addon.version  = '1.1.0';
+_addon.version  = '1.1.1';
 
 require 'common'
 require 'd3d8'
@@ -95,51 +95,51 @@ ashita.register_event('command', function(cmd, nType)
 
         if (cmd == 'scale') then
             if (args[3] == nil or tonumber(args[3]) == nil) then
-                print('[|ClaimBar] current scale --> '..config.scale)
+                print('[ClaimBar] current scale --> '..config.scale)
                 return false
             end
             local scale = tonumber(args[3])
             if (scale <= 0) then
-                print('[|ClaimBar] scale cannot be 0 or negative')
+                print('[ClaimBar] scale cannot be 0 or negative')
                 return false
             end
-            print('[|ClaimBar] set scale --> '.. scale)
+            print('[ClaimBar] set scale --> '.. scale)
             config.scale = scale
             return true
         
         elseif (cmd == 'anim') then
             if (args[3] == nil or tonumber(args[3]) == nil) then
-                print('[|ClaimBar] Current anim length --> '..config.anim)
+                print('[ClaimBar] Current anim length --> '..config.anim)
                 return false
             end
             local sec = tonumber(args[3])
             if (sec < 0 ) then
-                print('[|ClaimBar] anim cannot be negative')
+                print('[ClaimBar] anim cannot be negative')
                 return false
             end
-            print('[|ClaimBar] setting anim length --> '.. sec ..' seconds')
+            print('[ClaimBar] setting anim length --> '.. sec ..' seconds')
             config.anim = sec
             return true
         
         elseif (cmd == 'bars') then
             if (args[3] == nil or tonumber(args[3]) == nil) then
-                print('[|ClaimBar] Current bar limit --> '..config.max_bar)
+                print('[ClaimBar] Current bar limit --> '..config.max_bar)
                 return false
             end
             local bars = math.floor(tonumber(args[3]))
             if (bars < 1) then
-                print('[|ClaimBar] Minimum bar is 1')
+                print('[ClaimBar] Minimum bar is 1')
                 return false
             end
-            print('[|ClaimBar] setting max bar --> '.. bars)
-            config.max_bars = bars
+            print('[ClaimBar] setting max bar --> '.. bars)
+            config.max_bar = bars
             return true
 
         elseif (cmd == 'theme') then
             if (args[3] == nil) then
-                print('[|ClaimBar] Pick a theme')
-                print('[|ClaimBar] 1 -> Darksouls')
-                print('[|ClaimBar] 2 -> CustomHud')
+                print('[ClaimBar] Pick a theme')
+                print('[ClaimBar] 1 -> Darksouls')
+                print('[ClaimBar] 2 -> CustomHud')
                 return false
             end
             local theme = nil
@@ -361,8 +361,7 @@ function draw_bar(index, entity)
         anim[id] = nil
     end
     
-    y = (index-1) * _y
-    imgui.SetCursorPos(theme_config.name.x, theme_config.name.y + y)
+    imgui.SetCursorPos(theme_config.name.x, _y)
     imgui.Text('')
     local txt = ''
     for i = 1, #name do  
@@ -462,7 +461,7 @@ function create_texture(filepath)
     local res, texture = ashita.d3dx.CreateTextureFromFileA(filepath)
 	if (res ~= 0) then
 		local _, err = ashita.d3dx.GetErrorStringA(res)
-        print(string.format('[|ClaimBar Error] Failed to load background texture for slot: %s - Error: (%08X) %s', path, res, err))
+        print(string.format('[ClaimBar Error] Failed to load background texture for slot: %s - Error: (%08X) %s', path, res, err))
         return nil
 	end
 	return texture

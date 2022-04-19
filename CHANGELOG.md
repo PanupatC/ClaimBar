@@ -1,5 +1,10 @@
 # ClaimBar Change Log
 
+### v1.1.1 - 2022-04-20
+
+- Fixed `/cb bars` command
+- Fixed mob name position when bars > 3
+
 ### v1.1.0 - 2022-04-16
 
 - Animation data clear when zoning packet detected
